@@ -15,7 +15,7 @@ class MotorControlType(Enum):
 
 class Robot:
     # def __init__(self, device_name: str, baudrate=1_000_000, servo_ids=[1, 2, 3, 4, 5]):
-    def __init__(self, dynamixel, baudrate=1_000_000, servo_ids=[1, 2, 3, 4, 5]):
+    def __init__(self, dynamixel, baudrate=1_000_000, servo_ids=[1, 2, 3, 4, 5], auto=False):
         self.servo_ids = servo_ids
         self.dynamixel = dynamixel
         # self.dynamixel = Dynamixel.Config(baudrate=baudrate, device_name=device_name).instantiate()
@@ -50,6 +50,18 @@ class Robot:
             2)
         for id in self.servo_ids:
             self.pwm_writer.addParam(id, [2048])
+
+        if auto:
+            for id in self.servo_ids:
+                if (id == 1):
+                    self.dynamixel.set_profile_velocity(id, 45)
+                else:
+                    self.dynamixel.set_profile_velocity(id, 30)
+        else:
+            for id in self.servo_ids:
+                self.dynamixel.set_profile_velocity(id, 0)
+
+
         self._disable_torque()
         self.motor_control_state = MotorControlType.DISABLED
 
@@ -149,10 +161,12 @@ class Robot:
         print(f'enabling torque for servos {self.servo_ids}')
         for motor_id in self.servo_ids:
             self.dynamixel._enable_torque(motor_id)
-            if (motor_id == 1):
-                self.dynamixel.set_profile_velocity(motor_id, 45)
-            else:
-                self.dynamixel.set_profile_velocity(motor_id, 30)
+            # if (motor_id == 1):
+            #     self.dynamixel.set_profile_velocity(motor_id, 45)
+            # else:
+            #     self.dynamixel.set_profile_velocity(motor_id, 30)
+
+    
 
     def _set_pwm_control(self):
         self._disable_torque()

@@ -5,7 +5,7 @@ from robot import Robot
 from dynamixel import Dynamixel
 
 follower_dynamixel = Dynamixel.Config(baudrate=1_000_000, device_name='COM5').instantiate()
-follower = Robot(follower_dynamixel, servo_ids=[1, 2, 3, 4])
+follower = Robot(follower_dynamixel, servo_ids=[1, 2, 3, 4], auto=True)
 
 keyboard_positions = {'init': [2048, 640, 2048, 2500],
                       'j': [2186, 1070, 1913, 2164],
